@@ -153,7 +153,7 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
 git clone https://github.com/PanJiaChen/vue-element-admin.git
 
 # enter the project directory
-cd vue-element-admin
+cd daima
 
 # install dependency
 npm install
