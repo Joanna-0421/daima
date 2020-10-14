@@ -1,507 +1,304 @@
+
 <template>
-  <div class="app-container documentation-container">
-    <div class="editor">
-      <input v-model="message" placeholder="请在此输入问题标题" class="title-input">
-      <div class="editor-all">
-        <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
-          <div class="menubar">
-            <div class="search">
-              <div class="search-inputs">
-              <input
-                ref="search"
-                @keydown.enter.prevent="editor.commands.find(searchTerm)"
-                placeholder="Search …"
-                type="text"
-                v-model="searchTerm"
-              />
-              <input
-                @keydown.enter.prevent="editor.commands.replace(replaceWith)"
-                placeholder="Replace …"
-                type="text"
-                v-model="replaceWith"
-              />
-              </div>
-              <div class="search-buttons">
-                <button class="button" style="font-size:0.8em;line-height:24px;font-weight:500" @click="editor.commands.find(searchTerm)">
-                  Find
-                </button>
-                <button class="button" style="font-size:0.8em;line-height:24px;font-weight:500" @click="editor.commands.clearSearch()">
-                  Clear
-                </button>
-                <button class="button" style="font-size:0.8em;line-height:24px;font-weight:500" @click="editor.commands.replace(replaceWith)">
-                  Replace
-                </button>
-                <button class="button" style="font-size:0.8em;line-height:24px;font-weight:500" @click="editor.commands.replaceAll(replaceWith)">
-                  Replace All
-                </button>
-              </div>
-            </div>
-
-            <button class="menubar__button" @click="commands.undo">
-              <icon name="undo" />
-            </button>
-
-            <button class="menubar__button" @click="commands.redo">
-              <icon name="redo" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
-              <icon name="bold" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.italic() }" @click="commands.italic">
-              <icon name="italic" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.strike() }" @click="commands.strike">
-              <icon name="strike" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.underline() }" @click="commands.underline">
-              <icon name="underline" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.paragraph() }" @click="commands.paragraph">
-              <icon name="paragraph" />
-            </button>
-
-            <button class="menubar__button" style="line-height:12px;font-weight:500"
-              :class="{ 'is-active': isActive.heading({ level: 1 }) }" @click="commands.heading({ level: 1 })">
-              H1
-            </button>
-
-            <button class="menubar__button" style="line-height:12px;font-weight:500"
-              :class="{ 'is-active': isActive.heading({ level: 2 }) }" @click="commands.heading({ level: 2 })">
-              H2
-            </button>
-
-            <button class="menubar__button" style="line-height:12px;font-weight:500"
-              :class="{ 'is-active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })">
-              H3
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.bullet_list() }" @click="commands.bullet_list">
-              <icon name="ul" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.ordered_list() }" @click="commands.ordered_list">
-              <icon name="ol" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.blockquote() }" @click="commands.blockquote">
-              <icon name="quote" />
-            </button>
-
-            <button class="menubar__button"
-              :class="{ 'is-active': isActive.code_block() }" @click="commands.code_block">
-              <icon name="code" />
-            </button>
-
-            <button class="menubar__button" @click="commands.horizontal_rule">
-              <icon name="hr" />
-            </button>
-
-            <button class="menubar__button" @click="showImagePrompt(commands.image)">
-              <icon name="image" />
-            </button>
-
-            <button class="menubar__button" @click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })">
-              <icon name="table" />
-            </button>
-
-            <span v-if="isActive.table()">
-              <button class="menubar__button" @click="commands.deleteTable">
-                <icon name="delete_table" />
-              </button>
-              <button class="menubar__button" @click="commands.addColumnBefore">
-                <icon name="add_col_before" />
-              </button>
-              <button class="menubar__button" @click="commands.addColumnAfter">
-                <icon name="add_col_after" />
-              </button>
-              <button class="menubar__button" @click="commands.deleteColumn">
-                <icon name="delete_col" />
-              </button>
-              <button class="menubar__button" @click="commands.addRowBefore">
-                <icon name="add_row_before" />
-              </button>
-              <button class="menubar__button" @click="commands.addRowAfter">
-                <icon name="add_row_after" />
-              </button>
-              <button class="menubar__button" @click="commands.deleteRow">
-                <icon name="delete_row" />
-              </button>
-              <button class="menubar__button" @click="commands.toggleCellMerge">
-                <icon name="combine_cells" />
-              </button>
-            </span>
-          </div>
-        </editor-menu-bar>
-        <editor-content class="editor__content" :editor="editor" />
+    
+    <div>
+      <div style="margin:16px;display:flex;height:5vh">
+        <div>问题：</div>
+        <p style="magin-top:16px">{{ title }}</p>
       </div>
-      <div>
-        <h3 style="margin-top:2rem;margin-left:1rem;font-size:1rem;">标签管理</h3>
-        <p style="margin:0 1rem;font-size:0.8rem;color:#888;">彩色为已添加的标签，灰色为待添加的标签，正确添加标签有助于检索，利于问题被解答哦～</p>
-        <div class="flags">
-          <button class="flags-btn" :class="{'flags-wxml':active.wxml}" @click="changeFlag('wxml')">wxml</button>
-          <button class="flags-btn" :class="{'flags-wxss':active.wxss}" @click="changeFlag('wxss')">wxss</button>
-          <button class="flags-btn" :class="{'flags-less':active.less}" @click="changeFlag('less')">less</button>
-          <button class="flags-btn" :class="{'flags-js':active.js}" @click="changeFlag('js')">js</button>
-          <button class="flags-btn" :class="{'flags-ts':active.ts}" @click="changeFlag('ts')">ts</button>
-          <button class="flags-btn" :class="{'flags-json':active.json}" @click="changeFlag('json')">json</button>
-          <button class="flags-btn" :class="{'flags-component':active.component}" @click="changeFlag('component')">组件</button>
-          <button class="flags-btn" :class="{'flags-api':active.api}" @click="changeFlag('api')">API</button>
-          <button class="flags-btn" :class="{'flags-wxcloud':active.wxcloud}" @click="changeFlag('wxcloud')">云函数</button>
+      <div style="display:flex">
+        <el-tabs v-model="activeName" tab-position="left" type="card" style="margin:16px" @tab-click="handleClick">
+          <el-tab-pane label="js" name="first">
+            <iframe style="width:60vw;height:80vh;" src="/jshint_dis.html" />
+          </el-tab-pane>
+          <el-tab-pane label="wxml" name="second">
+            <iframe style="width:60vw;height:80vh;" src="/Fast XML Parser.html" />
+          </el-tab-pane>
+          <el-tab-pane label="css" name="third">
+            <iframe style="width:60vw;height:80vh;" src="http://localhost:8081/css-validator/#validate_by_input" />
+          </el-tab-pane>
+        </el-tabs>
+        <div style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);height:80vh;width:30vw;margin:16px">
+          <h2>摘要：</h2>
+          <div>
+            <p>问题分类：</p>
+            <el-tag
+              v-for="item in classify"
+              :key="item"
+              type="success"
+              size="medium"
+              disable-transitions
+              style="margin:4px"
+            > {{ item }} </el-tag>
+          </div>
+          <div v-if="tag != null">
+            <p>问题的标签</p>
+            <el-tag
+              v-for="item in tag"
+              :key="item"
+              type="primary"
+              size="medium"
+              disable-transitions
+              style="margin:4px"
+            > {{ item }} </el-tag>
+          </div>
+        
+          <p>细节描述：</p>
+          <p style="font-size:13px">{{ detail }}</p>
         </div>
       </div>
+      
+      <div id="app">
+        <h1>评论详情</h1>
+        <hr size=3px>
+        <ul class="list-group">
+            <dl v-for="item in list" :key="item.id">
+              <dt class="list_user">{{ item.user }}</dt>
+              <dt class="list_time">时间：{{item.time}}</dt>
+              <dd class="list_content">{{ item.content }}</dd>              
+              
+              <dd class="list_reply">回复：{{item.reply}}</dd>
+
+              
+              <el-form>
+                <el-form-item>
+                  <el-input type="textarea" :rows="1" placeholder="回复" v-model="reply"></el-input>
+                  <el-button type="text" class="reply" @click="reply">回复</el-button>
+                </el-form-item>
+              </el-form>
+              <hr>
+              
+            </dl>
+
+        </ul>        
+      </div>
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="我的评论">
+          <el-input type="textarea" :rows="2" placeholder="分享你的想法" v-model="comment"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">发表</el-button>
+        </el-form-item>
+      </el-form>
+      <comment-textarea v-bind:type="type" v-bind:name="oldComment" v-on:submit="addComment" v-on:canel="canelCommit"></comment-textarea>
     </div>
-  </div>
+
 </template>
 
+
 <script>
-import DropdownMenu from '@/components/Share/DropdownMenu'
 
-import javascript from 'highlight.js/lib/languages/javascript'
-import typescript from 'highlight.js/lib/languages/typescript'
-import css from 'highlight.js/lib/languages/css'
-import less from 'highlight.js/lib/languages/less'
-import xml from 'highlight.js/lib/languages/xml'
-import json from 'highlight.js/lib/languages/json'
-import c from 'highlight.js/lib/languages/c'
-import cpp from 'highlight.js/lib/languages/cpp'
-import c_like from 'highlight.js/lib/languages/c-like'
-import arduino from 'highlight.js/lib/languages/arduino'
-
-import Icon from '@/components/Icon'
-import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
-import {
-  Blockquote,
-  CodeBlockHighlight,
-  HardBreak,
-  Heading,
-  HorizontalRule,
-  Image,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Italic,
-  Link,
-  Table,
-  TableHeader,
-  TableCell,
-  TableRow,
-  Strike,
-  Underline,
-  History,
-  Search,
-  TrailingNode
-} from 'tiptap-extensions'
-
-export default {
-  name: 'Documentation',
-  components: {
-    EditorContent,
-    EditorMenuBar,
-    Icon,
-    DropdownMenu
-  },
-  data() {
-    return {
-      editor: new Editor({
-        extensions: [
-          new Blockquote(),
-          new BulletList(),
-          new CodeBlockHighlight({
-            languages: {
-              javascript, typescript, css, less, xml, json, c, cpp, c_like, arduino
-            }
-          }),
-          new HardBreak(),
-          new Heading({ levels: [1, 2, 3] }),
-          new HorizontalRule(),
-          new Image(),
-          new ListItem(),
-          new OrderedList(),
-          new TodoItem({
-            nested: true
-          }),
-          new TodoList(),
-          new Link(),
-          new Bold(),
-          new Italic(),
-          new Strike(),
-          new Underline(),
-          new History(),
-          new Search({
-            disableRegex: false
-          }),
-          new TrailingNode({
-            node: 'paragraph',
-            notAfter: ['paragraph']
-          }),
-          new Table({
-            resizable: true
-          }),
-          new TableHeader(),
-          new TableCell(),
-          new TableRow()
-        ],
-        content: `
-          <h2>
-            Hi there,
-          </h2>
-          <p>
-            this is a very <em>basic</em> example of tiptap.
-          </p>
-          <pre><code>body { display: none; }</code></pre>
-          <ul>
-            <li>
-              A regular list
-            </li>
-            <li>
-              With regular items
-            </li>
-          </ul>
-          <blockquote>
-            It's amazing 👏
-            <br />
-            – mom
-          </blockquote>
-        `,
-        onBlur: (e) => {
-          console.log(this.editor.getJSON())
-        }
-      }),
-      active: {
-        wxml: false,
-        wxss: false,
-        less: false,
-        js: false,
-        ts: false,
-        json: false,
-        component: false,
-        api: false,
-        wxcloud: false
-      }
+  Vue.component('commentTextarea',{
+    template:'\
+    <div class="commentBox">\
+    <h3>发表评论</h3>\
+    <b v-if="type">你回复&nbsp;{{name}}</b>\
+    <textarea name="" value="请填写评论内容" v-model="commentText"></textarea>\
+    <button class="btn" @click="addComment">发表</button>\
+    <button class="btn" @click="canelComment">取消</button>\
+    </div>',
+    props: ['type','name'],
+    data: function(){
+    return {commentText:""}
+    },
+    methods: {
+    addComment: function() {
+    this.$emit("submit",this.commentText);
+    this.commentText = "";
+    },
+    canelComment: function() {
+    this.$emit("canel");
+    this.commentText = "";
     }
-  },
-  beforeDestroy() {
-    this.editor.destroy()
-  },
-  methods: {
-    showImagePrompt(command) {
-      const src = prompt('Enter the url of your image here')
-      if (src !== null) {
-        command({ src })
+    }
+  });
+  Vue.component('commemt-content',{
+    template:'\
+    <div class="commentBox">\
+    <h3>评论</h3>\
+    <p v-if="comment.length==0">暂无评论，我来发表第一篇评论！</p>\
+    <div v-else>\
+    <div class="comment" v-for="(item,index) in comment" v-bind:index="index" >\
+    <b>{{item.name}}<span>{{item.time}}</span></b>\
+    <p @click="changeCommenter(item.name,index)">{{item.content}}</p>\
+    <div v-if="item.reply.length > 0">\
+      <div class="reply" v-for="reply in item.reply">\
+      <b>{{reply.responder}}&nbsp;&nbsp;回复&nbsp;&nbsp;{{reply.reviewers}}<span>{{reply.time}}</span></b>\
+      <p @click="changeCommenter(reply.responder,index)">{{reply.content}}</p>\
+      </div>\
+    </div>\
+    </div>\
+    </div>\
+    </div>',
+    props: ['comment'],
+    methods: {
+    changeCommenter: function(name,index) {
+    this.$emit("change",name,index);
+    }
+    }
+  });
+  /*
+  var comment = new Vue({
+    el: "#comment",
+    data: {
+    commenter: "session", //评论人，这里会从session拿
+    type: 0, //0为评论作者1为评论别人的评论
+    oldComment: null, //久评论者的名字
+    chosedIndex: -1, //被选中的评论的index
+    article: {
+    title: "当归泡水喝的九大功效",
+    time: "2016-07-12",
+    read:50,
+    content: ""
+    },
+
+    comment: [
+      {
+      name: "有毒的黄同学", //评论人名字
+      time: "2016-08-17", 
+      content: "好,讲得非常好，good",
+      reply: [ //回复评论的信息，是一个数组，如果没内容就是一个空数组
+      {
+      responder: "傲娇的", //评论者
+      reviewers: "有毒的黄同学", //被评论者
+      time: "2016-09-05",
+      content: "你说得对"
+      }
+      ]      
+  //评论内容
+      }
+      ],
+      
+    methods: {
+    //添加评论
+    addComment: function(data) {
+    if(this.type == 0) {
+    this.comment.push({
+      name: 'session',
+      time: getTime(),
+      content: data,
+      reply: []
+    });
+ //服务器端
+    }else if(this.type == 1){
+    this.comment[this.chosedIndex].reply.push({
+      responder: 'session',
+      reviewers:this.comment[this.chosedIndex].name,
+      time: getTime(),
+      content: data
+    });
+    this.type = 0;
+    }
+    },
+ //监听到了点击了别人的评论
+    changCommmer: function(name,index) {
+    this.oldComment = name;
+    this.chosedIndex = index;
+    this.type = 1;
+    },
+ //监听到了取消评论
+    canelCommit: function() {
+    this.type = 0;
+    }
+    }
+  })
+  */
+  var comment = new Vue({
+ el: "#comment",
+ data: {
+ commenter: "session", //评论人，这里会从session拿
+ type: 0, //0为评论作者1为评论别人的评论
+ oldComment: null, //久评论者的名字
+ chosedIndex: -1, //被选中的评论的index
+ article: {
+ title: "当归泡水喝的九大功效",
+ time: "2016-07-12",
+ read:50,
+ content: ""
+ },
+ comment: [] //评论内容
+ },
+ methods: {
+ //添加评论
+ addComment: function(data) {
+ if(this.type == 0) {
+ this.comment.push({
+  name: 'session',
+  time: getTime(),
+  content: data,
+  reply: []
+ });
+ //服务器端
+ }else if(this.type == 1){
+ this.comment[this.chosedIndex].reply.push({
+  responder: 'session',
+  reviewers:this.comment[this.chosedIndex].name,
+  time: getTime(),
+  content: data
+ });
+ this.type = 0;
+ }
+ },
+ //监听到了点击了别人的评论
+ changCommmer: function(name,index) {
+ this.oldComment = name;
+ this.chosedIndex = index;
+ this.type = 1;
+ },
+ //监听到了取消评论
+ canelCommit: function() {
+ this.type = 0;
+ }
+ }
+})
+  /*
+  export default {
+    data() {
+      return {
+        list: [
+                 {id: Date.now(), user:'李白', content: '天生我才必有用',reply:'',time:'2019-10-3'},
+                 {id: Date.now(), user:'林则徐', content:'岂因祸福避趋之',reply:'',time:''},
+                 {id: Date.now(), user:'蛤', content:'苟利国家生死以',reply:'',time:''}
+                ],
+        comment: '',
+        reply: ''
       }
     },
-    changeFlag(t) {
-      this.active[t] = !this.active[t]
+    
+    methods: {
+      onSubmit() {
+        console.log('submit!');
+      },
+      reply(){
+        var name=prompt("输入的内容","");
+        if (name!=null && name!="") {
+        alert("你输入的是" + name);
+        
+        }
+      }
     }
   }
-}
+  */
 </script>
 
-<style lang="scss">
-@import 'highlight.js/scss/tomorrow-night-eighties.scss';
-@import '@/assets/sass/variables.scss';
-@media (min-width: 800px) {
-  .search{
-    display:flex;
-  }
+<style>
+.list_user{
+  font-size: 20px;
+  margin-bottom: 10px;
 }
-.flags {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0.5rem 1rem;
-  .flags-btn {
-    padding: 0.5rem 0.75rem;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    border: none;
-    color: #888;
-    background: #eee;
-    transition: all .3s ease;
-    margin-right: 0.5rem;
-    letter-spacing: 1px;
-    font-size: 0.8rem;
-  }
-  .flags-wxml {
-    color: #eee;
-    background: #2ecc71;
-    transition: all .3s ease;
-  }
-  .flags-wxss {
-    color: #eee;
-    background: #3498db;
-    transition: all .3s ease;
-  }
-  .flags-less {
-    color: #eee;
-    background: #2980b9;
-    transition: all .3s ease;
-  }
-  .flags-js {
-    color: #eee;
-    background: #f1c40f;
-    transition: all .3s ease;
-  }
-  .flags-ts {
-    color: #eee;
-    background: #e67e22;
-    transition: all .3s ease;
-  }
-  .flags-json {
-    color: #eee;
-    background: #e74c3c;
-    transition: all .3s ease;
-  }
-  .flags-component {
-    color: #eee;
-    background: #9b59b6;
-    transition: all .3s ease;
-  }
-  .flags-api {
-    color: #eee;
-    background: #f39c12;
-    transition: all .3s ease;
-  }
-  .flags-wxcloud {
-    color: #eee;
-    background: #e67e22;
-    transition: all .3s ease;
-  }
+.list_content{
+  font-size: 15px;
+  margin-bottom: 10px;
 }
-.editor-all {
-  background: #eeeeee;
-  border-radius: 1rem;
-  overflow: hidden;
-  margin: 1rem 0;
+.list_reply{
+  font-size: 15px;
+  margin-bottom: 10px;
 }
-.menubar {
-  padding: 0.5rem;
-  background: #dddddd;
+.list_time{
+  font-size: 10px;
+  margin-bottom: 10px;
 }
-.editor__content {
-  padding: 1rem;
-}
-.search {
-  overflow: hidden;
-  padding: 0.25rem;
-  width: 100%;
-  .search-inputs {
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    input {
-      padding: 0.25rem 0.5rem;
-      border: 0;
-      border-radius: 3px;
-      margin-right: 0.2rem;
-      font: inherit;
-      font-size: 0.8rem;
-      width: 20%;
-      flex: 1;
-      margin: 0.25rem;
-      border-radius: 0.5rem;
-    }
-  }
-  .search-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    .button{
-      margin: 0.25rem;
-      border-radius: 0.5rem;
-      overflow: hidden;
-    }
-  }
-}
-.find {
-  background: rgba(255, 213, 0, 0.5);
-}
-ul[data-type="todo_list"] {
-  padding-left: 0;
-}
-li[data-type="todo_item"] {
-  display: flex;
-  flex-direction: row;
-}
-.todo-checkbox {
-  border: 2px solid $color-black;
-  height: 0.9em;
-  width: 0.9em;
-  box-sizing: border-box;
-  margin-right: 10px;
-  margin-top: 0.3rem;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: pointer;
-  border-radius: 0.2em;
-  background-color: transparent;
-  transition: 0.4s background;
-}
-.todo-content {
-  flex: 1;
-  > p:last-of-type {
-    margin-bottom: 0;
-  }
-  > ul[data-type="todo_list"] {
-    margin: .5rem 0;
-  }
-}
-li[data-done="true"] {
-  > .todo-content {
-    > p {
-      text-decoration: line-through;
-    }
-  }
-  > .todo-checkbox {
-    background-color: $color-black;
-  }
-}
-li[data-done="false"] {
-  text-decoration: none;
-}
-.title-input{
-  border: none;
-  width: 100%;
-  font-size: 32px;
-  font-weight: 700;
-  padding: 16px 8px;
-}
-</style>
-
-<style lang="scss" scoped>
-.documentation-container {
-  margin: 50px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-
-  .document-btn {
-    flex-shrink: 0;
-    display: block;
-    cursor: pointer;
-    background: black;
-    color: white;
-    height: 60px;
-    width: 200px;
-    margin-bottom: 16px;
-    line-height: 60px;
-    font-size: 20px;
-    text-align: center;
-  }
+.reply{
+  margin-left: 1000px;
 }
 </style>

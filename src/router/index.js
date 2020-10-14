@@ -435,6 +435,24 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/share',
+    component: Layout,
+    redirect: '/share/index',
+    name: 'share',
+    meta:{
+      title: 'share',
+      icon: 'clipboard'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/share/index'),
+        name: 'shareDemo',
+        meta: { title: '分享页', roles: ['admin']}
+      }
+    ]
+  },
+  {
     path: '/search',
     component: Layout,
     redirect: '/search/index',
@@ -449,6 +467,42 @@ export const asyncRoutes = [
         component: ()=>import('@/views/search/index'),
         name: 'search',
         meta: { title: 'bug库', roles: ['admin','editor']}
+      }
+    ]
+  },
+  {
+    path: '/discuss',
+    component: Layout,
+    redirect: '/discuss/index',
+    name: 'discuss',
+    meta: {
+      title: 'discuss',
+      icon: 'search'
+    },
+    children: [
+      {
+        path: 'index',
+        component: ()=>import('@/views/discuss/index'),
+        name: 'discuss',
+        meta: { title:'讨论', roles: ['admin','editor']}
+      }
+    ]
+  },
+  {
+    path: '/discussionTest',
+    component: Layout,
+    redirect: '/discussionTest/index',
+    name: 'discussionTest',
+    meta: {
+      title: 'discussionTest',
+      icon: 'search'
+    },
+    children: [
+      {
+        path: 'index',
+        component: ()=>import('@/views/discussionTest/index'),
+        name: 'discussionTest',
+        meta: { title:'讨论', roles: ['admin','editor']}
       }
     ]
   },

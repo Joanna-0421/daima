@@ -6,10 +6,6 @@
                 <el-alert title="Oops,还没有收到消息" type="info"></el-alert>
             </el-tab-pane>
             <el-tab-pane>
-                <span slot="label">私信</span>
-                <el-alert title="Oops,还没有收到消息" type="info"></el-alert>
-            </el-tab-pane>
-            <el-tab-pane>
                 <span slot="label">群消息</span>
                 <el-alert title="Oops,还没有收到消息" type="info"></el-alert>
             </el-tab-pane>
